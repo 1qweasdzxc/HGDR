@@ -69,7 +69,7 @@ class DataProcess(Dataset):
         if 'process' in self.__class__.__dict__.keys():
             self._process()
 
-        #加载预处理好的数据集
+
         with open(self.processed_paths[0],'rb') as f:
             dataset_property_dict = pickle.load(f)
         for k,v in dataset_property_dict.items():
@@ -120,8 +120,8 @@ class DataProcess(Dataset):
     def processed_file_names(self):
         return ['ml_core_{}_type_{}.pkl'.format(self.num_core, self.type)]
 
-    #数据预处理
-    #需要保证Sync、Remove duplicates
+    # data preprocessing
+    # Sync、Remove duplicates
     def process(self):
         print(os.getcwd())
         issues_developer_inter = pd.read_csv(join(self.processed_dir, 'vscode_inter30.csv'), sep='\t').fillna('')
@@ -170,31 +170,7 @@ class DataProcess(Dataset):
             else:
                 raise NotImplementedError
             train_data_np = np.hstack([train_data_np, neg_inid_np])
-        #     if self.entity_aware and not hasattr(self, 'did_feat_nids'):
-        #         # build developer feature
-        #         did_feat_nids = []
-        #         pbar = tqdm.tqdm(self.unique_dids, total=len(self.unique_dids))
-        #         for did in pbar:
-        #             pbar.set_description('Sampling item entities')
-        #             feat_nids = []
-        #             source_code_nids = [self.e2nid_dict['sid'][sid] for sid in developer_source_code[developer_source_code.developer_id==did].source_code_id]
-        #             feat_nids += source_code_nids
-        #             did_feat_nids.append(feat_nids)
-        #         self.did_feat_nids = did_feat_nids
 
-        #         # build issue feature
-        #         iid_feat_nids = []
-        #         pbar  = tqdm.tqdm(self.unique_iids, total=len(self.unique_iids))
-        #         for iid in pbar:
-        #             pbar.set_description('Sampling issue entities')
-        #             feat_nids = []
-        #             tag_nids = [self.e2nid_dict['tag'][tag] for tag in self.unique_tags if issues[issues.issue_id==iid][tag].item()]
-        #             feat_nids += tag_nids
-        #             source_code_nids = [self.e2nid_dict['sid'][sid] for sid in issues_source_code[issues_source_code.issue_id==iid].source_id]
-        #             feat_nids += source_code_nids
-        #         self.iid_feat_nids = iid_feat_nids
-        # else:
-        #     raise NotImplementedError
         train_data_t = torch.from_numpy(train_data_np).long()
         shuffle_idx = torch.randperm(train_data_t.shape[0])
         self.train_data = train_data_t[shuffle_idx]
@@ -222,38 +198,6 @@ class DataProcess(Dataset):
         else:
             idx = idx.to_list() if torch.is_tensor(idx) else idx
             train_data_t = self.train_data[idx]
-            # if self.entity_aware:
-            #     did = train_data_t[1].cpu().detach().item()
-            #     feat_nids = self.did_feat_nids[int(did - self.type_accs['did'])]
-
-            #     if len(feat_nids) == 0:
-            #         pos_developer_entity_nid = 0
-            #         neg_developer_entity_nid = 0
-            #         developer_entity_mask = 0
-            #     else:
-            #         pos_developer_entity_nid = rd.choice(feat_nids)
-            #         entity_type = self.nid2e_dict[pos_developer_entity_nid][0]
-            #         lower_bound = self.type_accs.get(entity_type)
-            #         upper_bound = lower_bound + getattr(self, 'num_' + entity_type + 's')
-            #         neg_developer_entity_nid = rd.choice(range(lower_bound,upper_bound))
-            #         developer_entity_mask = 1
-
-            #     iid = train_data_t[0].cpu().detach().item()
-            #     feat_nids = self.iid_feat_nids[int(iid - self.type_accs['iid'])]
-            #     if len(feat_nids) == 0:
-            #         pos_issue_entity_nid = 0
-            #         neg_issue_entity_nid = 0
-            #         issue_entity_mask = 0
-            #     else:
-            #         pos_issue_entity_nid = rd.choice(feat_nids)
-            #         entity_type = self.nid2e_dict[pos_issue_entity_nid]
-            #         lower_bound = self.type_accs.get(entity_type)
-            #         upper_bound = lower_bound + getattr(self, 'num_' + entity_type + 's')
-            #         neg_issue_entity_nid = rd.choice(range(lower_bound, upper_bound))
-            #         issue_entity_mask = 1
-
-                # pos_neg_entities = torch.tensor([pos_developer_entity_nid, neg_developer_entity_nid, developer_entity_mask, pos_issue_entity_nid, neg_issue_entity_nid, issue_entity_mask],dtype=torch.long)
-                # train_data_t = torch.cat([train_data_t, pos_neg_entities], dim = -1)
             return train_data_t
 
 

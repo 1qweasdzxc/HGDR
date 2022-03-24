@@ -22,7 +22,7 @@ class GraphRecsysModel(torch.nn.Module):
         raise NotImplementedError
 
     def loss(self, pos_neg_pair_t):
-        #pos_neg_pair_t是什么？
+
         if self.training:
             self.cached_repr = self.forward()
         pos_pred = self.predict(pos_neg_pair_t[:, 0 ],pos_neg_pair_t[:, 1])
@@ -64,7 +64,7 @@ class GraphRecsysModel(torch.nn.Module):
         raise NotImplementedError
 
     def eval(self, metapath_idx=None):
-        super(GraphRecsysModel, self).eval()#将模块设置为评估模式
+        super(GraphRecsysModel, self).eval()
         if self.__class__.__name__[:3] == 'PEA':
             if self.__class__.__name__[:3] == 'PEA':
                 with torch.no_grad():
@@ -73,17 +73,7 @@ class GraphRecsysModel(torch.nn.Module):
                 with torch.no_grad():
                     self.cached_repr = self.forward()
 
-
-# class BaseRecsysModel(GraphRecsysModel):
-#     def __init__(self,**):
-
-
-
-
-
-
 class BaseRecsysModel(GraphRecsysModel):
     def __init__(self,**kwargs):
         super(BaseRecsysModel, self).__init__(**kwargs)
 
-# class GATRecsysModel(BaseRecsysModel):
