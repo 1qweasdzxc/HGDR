@@ -12,7 +12,7 @@ import gc
 import os.path as osp
 from dataset import DataProcess
 
-#加载训练结果全局日志
+# Load global log of training results
 def load_global_logger(global_logger_filepath):
     if os.path.isfile(global_logger_filepath):
         with open(global_logger_filepath,'rb') as f:
@@ -23,7 +23,7 @@ def load_global_logger(global_logger_filepath):
             np.zeros((0,16)),np.zeros((0,16)),np.zeros((0,1)),np.zeros((0,1)),np.zeros((0,1))
     return HRs_per_run, NDCGs_per_run, AUC_per_run, train_loss_per_run, eval_loss_per_run, HRs_per_run.shape[0]
 
-#反向传播算法
+# optimizer
 def get_opt_class(opt):
     if opt.lower() == 'adam':
         return torch.optim.Adam
@@ -34,7 +34,7 @@ def get_opt_class(opt):
     else:
         raise NotImplementedError('No such optims!')
 
-#从保存的文件加载模型的参数
+# Load the parameters of the model from the saved file
 def load_model(file_path, model, optim, device):
     if os.path.isfile(file_path):
         checkpoint = torch.load(file_path, map_location=device)
@@ -53,17 +53,17 @@ def load_model(file_path, model, optim, device):
         rec_metrics = np.zeros((0,16)),np.zeros((0,16)), np.zeros((0,1)), np.zeros((0,1)),np.zeros((0,1))
     return model, optim, epoch, rec_metrics
 
-#用于强制写入与给定文件描述符关联的文件
+# force writing to the file associated with the given file descriptor
 def instantwrite(filename):
     filename.flush()
     os.fsync(filename.fileno())
 
-#清理变量缓存
+# clear variable cache
 def clearcache():
-    gc.collect() #释放内存
-    torch.cuda.empty_cache() #释放显存
+    gc.collect()
+    torch.cuda.empty_cache()
 
-#将数据转为图格式
+# convert data to graph format
 def update_pea_graph_input(dataset_args, train_args, dataset):
     if dataset_args['dataset'] == "Tensorflow":
         issue2developer_edge_index = torch.from_numpy(dataset.edge_index_nps['issue2developer']).long().to(train_args['device'])
@@ -95,7 +95,7 @@ def update_pea_graph_input(dataset_args, train_args, dataset):
 
 
 
-#获取文件路径
+# get file path
 def get_folder_path(model, dataset, loss_type):
     data_folder = osp.join('data',dataset)
     weights_folder = osp.join('data','weights', dataset, model, loss_type)
@@ -105,12 +105,12 @@ def get_folder_path(model, dataset, loss_type):
     logger_folder = osp.expanduser(osp.normpath(logger_folder))
     return data_folder, weights_folder, logger_folder
 
-#加载数据集
+# Load dataset
 def load_dataset(dataset_args):
   return DataProcess(**dataset_args)
 
 
-# 保存训练好的模型
+# Save the trained model
 def save_model(file_path, model, optim, epoch, rec_metrics, silent=False):
     model_states = {'model':model.state_dict()}
     optim_states = {'optim':optim.state_dict()}
@@ -125,7 +125,7 @@ def save_model(file_path, model, optim, epoch, rec_metrics, silent=False):
     if not silent:
         print("Saved checkpoint_backup '{}'".format(file_path))
 
-# 保存日志文件
+# Save log file
 def save_global_logger(global_logger_filepath,
                        HR_per_run, NDCG_per_run, AUC_per_run,
                        train_loss_per_run, eval_loss_per_run):
