@@ -8,7 +8,6 @@ import numpy as np
 from itertools import product
 NUM_RECS_RANGE = 20
 
-#命中率
 def hit(hit_vec_np):
     HRatK = []
     for num_recs in range(5,NUM_RECS_RANGE+1):
