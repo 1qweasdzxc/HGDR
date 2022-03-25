@@ -47,7 +47,7 @@ class BaseSolver(object):
         i_nids = list(test_pos_inid_dnid_map.keys())
         test_bar = tqdm.tqdm(i_nids, total=len(i_nids))
         
-        # 从测试集中抽样正负样本
+
         for i_idx, i_nid in enumerate(test_bar):
           pos_d_nids, neg_d_nids = self.generate_candidates(dataset, i_nid)
           if len(pos_d_nids) == 0 or len(neg_d_nids) == 0:
@@ -65,11 +65,11 @@ class BaseSolver(object):
           neg_i_nids_t = torch.from_numpy(np.array([i_nid for _ in range(len(neg_d_nids))])).to(
               self.train_args['device'])
           neg_d_nids_t = torch.from_numpy(np.array(neg_d_nids)).to(self.train_args['device'])
-          pos_pred = model.predict(pos_i_nids_t,pos_d_nids_t).reshape(-1) # 经过多层感知机得到的分数
+          pos_pred = model.predict(pos_i_nids_t,pos_d_nids_t).reshape(-1)
           neg_pred = model.predict(neg_i_nids_t,neg_d_nids_t).reshape(-1)
 
-          _, indices = torch.sort(torch.cat([pos_pred,neg_pred]),descending=True) #descending=True 从大到小排序,dim=1 按行排序，默认
-          hit_vec = (indices < len(pos_d_nids)).cpu().detach().numpy()#后面当我们进行反向传播时，到该调用detach()的tensor就会停止，不能再继续向前进行传播
+          _, indices = torch.sort(torch.cat([pos_pred,neg_pred]),descending=True)
+          hit_vec = (indices < len(pos_d_nids)).cpu().detach().numpy()
           pos_pred = pos_pred.cpu().detach().numpy()
           neg_pred = neg_pred.cpu().detach().numpy()
           if self.train_args['head_tail_test']:
@@ -173,7 +173,7 @@ class BaseSolver(object):
                     HRs_per_run_np, NDCGs_per_run_np, AUC_per_run_np, train_loss_per_run_np, eval_loss_per_run_np = \
                         rec_metrics
                     if torch.cuda.is_available():
-                        torch.cuda.synchronize()  # 同步程序执行
+                        torch.cuda.synchronize()
 
                     start_epoch = last_epoch + 1
                     t_start = time.perf_counter()

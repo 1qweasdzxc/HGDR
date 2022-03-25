@@ -31,7 +31,7 @@ class GraphRecsysModel(torch.nn.Module):
         if self.entity_aware and self.training:
             pos_item_entity, neg_item_entity = pos_neg_pair_t[:, 3], pos_neg_pair_t[:, 4]
             pos_user_entity, neg_user_entity = pos_neg_pair_t[:, 6], pos_neg_pair_t[:, 7]
-            #item_entity_mask, user_entity_mask是干嘛的？(batch randomly sampled)
+            # (batch randomly sampled)
             item_entity_mask, user_entity_mask = pos_neg_pair_t[:, 5], pos_neg_pair_t[:, 8]
             # l2 norm
             x = self.x
