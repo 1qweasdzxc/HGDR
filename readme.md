@@ -1,4 +1,4 @@
-# Heterogeneous Graph Network-based Developer Recommendation with Self-supervised and Information Supplement
+# Heterogeneous Graph Network-based Software Developer Recommendation
 ## Requirements
 pip install  tensorboardX gensim==4.0.1 nltk \
 pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric -f https://data.pyg.org/whl/torch-1.10.0+cu111.html \
