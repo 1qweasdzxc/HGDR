@@ -233,7 +233,7 @@ class PEABaseRecsysModel(GraphRecsysModel):
                       self.x.data[self.e2nid_dict['did'][did],:] = torch.from_numpy(self.issues_embedding[did])
               except:
                   continue
-            self.x.data.requires_grad = False #词向量，因此是不可学习
+            self.x.data.requires_grad = False
             self.x1 = Parameter(torch.Tensor(kwargs['dataset']['num_nodes'], self.emb_dim))
             self.x = Parameter(torch.cat((self.x,self.x1),dim=1))
 
